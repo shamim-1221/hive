@@ -1,0 +1,47 @@
+Download hive-2.3.9
+Extract, rename and move
+nano ~/.bashrc
+export HIVE_HOME=/home/hadoop/hive
+export PATH=$PATH:$HIVE_HOME/bin
+source
+
+nano $HADOOP_HOME/etc/Hadoop/core-site.xml
+<property>
+<name>hadoop.proxyuser.hadoop.groups</name>
+<value>*</value>
+</property>
+<property>
+<name>hadoop.proxyuser.hadoop.hosts</name>
+<value>*</value>
+</property>
+<property>
+<name>hadoop.proxyuser.server.hosts</name>
+<value>*</value>
+</property>
+<property>
+<name>hadoop.proxyuser.server.groups</name>
+<value>*</value>
+</property>
+
+hadoop fs –mkdir /tmp
+hadoop fs –mkdir /tmp/user
+hadoop fs –mkdir /tmp/user/hive
+hadoop fs –mkdir /tmp/user/hive/warehouse
+
+hadoop fs -chmod g+w /tmp
+hadoop fs -chmod g+w tmp/user/hive/warehouse
+
+schematool -dbType derby -initSchema
+
+hiveserver2
+
+Open a new terminal and connect beeline with hive server
+beeline -n hadoop -u jdbc:hive2://localhost:10000
+
+create database test;
+show databases;
+create table test.emp (id int, name string);
+insert into test.emp VALUES(1, 'a');
+insert into test.emp VALUES(2, 'b');
+insert into test.emp VALUES(3, 'c');
+select * from test.emp
